@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="indexcss.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piedra, Papel, Tijeras</title>
+</head>
+
+<body>
+    <div id="general">
+        <h1>Piedra, papel, tijeras</h1>
+        <div id="juego">
+            <div id="indtrampas">
+                <p>Trampas</p>
+            </div>
+            <div class="cont">
+                <div class="imagenes">
+                    <div id="jugada"></div>
+                    <div id="numero"></div>
+                    <div id="respuesta"></div>
+                </div>
+                <p id="mensaje"></p>
+            </div>
+        </div>
+        <div class="contbotones">
+            <div id="opciones"></div>
+            <div id="otros"></div>
+        </div>
+    </div>
+
+    <div id="historico">
+        <h1>Partidas Jugadas</h1>
+        <div id="partidas"></div>
+    </div>
+    <script>
+        const piedra = {
+            nombre: "piedra",
+            icono: "🗿"
+        }
+        const papel = {
+            nombre: "papel",
+            icono: "📜"
+        }
+        const tijeras = {
+            nombre: "tijeras",
+            icono: "✂️"
+        }
+
+        let partidas = [];
+        let cont = 1;
+        let opctrampas = false;
+        let usatrampas = "No";
+
+        function mostraricono(boton) {
+            document.getElementById("jugada").innerHTML = boton.innerHTML;
+            let respuesta = Math.round(Math.random() * (3 - 1) + 1);
+
+            switch (respuesta) {
+                case 1:
+                    respuesta = "🗿";
+                    break;
+                case 2:
+                    respuesta = "📜";
+                    break;
+                case 3:
+                    respuesta = "✂️";
+                    break;
+            }
+
+            document.getElementById("respuesta").innerHTML = respuesta;
+
+            let resultado = "";
+
+            if (opctrampas === false) {
+                if (boton.innerHTML === "🗿") {
+                    if (respuesta === "🗿") {
+                        resultado = "Empate";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    } else if (respuesta === "📜") {
+                        resultado = "Derrota";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    } else {
+                        resultado = "Victoria";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    }
+                } else if (boton.innerHTML === "📜") {
+                    if (respuesta === "🗿") {
+                        resultado = "Victoria";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    } else if (respuesta === "📜") {
+                        resultado = "Empate";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    } else {
+                        resultado = "Derrota";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    }
+                } else if (boton.innerHTML === "✂️") {
+                    if (respuesta === "🗿") {
+                        resultado = "Derrota";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    } else if (respuesta === "📜") {
+                        resultado = "Victoria";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    } else {
+                        resultado = "Empate";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    }
+                }
+            } else {
+                let probabilidad = Math.round(Math.random() * (10 - 0) + 1);
+                if (probabilidad < 8) {
+                    let ganarempatar = Math.round(Math.random());
+                    if (ganarempatar === 0) {
+                        if (boton.innerHTML === "🗿") {
+                            respuesta = "🗿";
+                            resultado = "Empate";
+                            document.getElementById("mensaje").innerHTML = resultado;
+                        } else if (boton.innerHTML === "📜") {
+                            respuesta = "📜";
+                            resultado = "Empate";
+                            document.getElementById("mensaje").innerHTML = resultado;
+                        } else if (boton.innerHTML === "✂️") {
+                            respuesta = "✂️";
+                            resultado = "Empate";
+                            document.getElementById("mensaje").innerHTML = resultado;
+                        }
+                    } else {
+                        if (boton.innerHTML === "🗿") {
+                            respuesta = "📜";
+                            resultado = "Derrota";
+                            document.getElementById("mensaje").innerHTML = resultado;
+                        } else if (boton.innerHTML === "📜") {
+                            respuesta = "✂️";
+                            resultado = "Derrota";
+                            document.getElementById("mensaje").innerHTML = resultado;
+                        } else if (boton.innerHTML === "✂️") {
+                            respuesta = "🗿";
+                            resultado = "Derrota";
+                            document.getElementById("mensaje").innerHTML = resultado;
+                        }
+                    }
+                } else {
+                    if (boton.innerHTML === "🗿") {
+                        respuesta = "✂️";
+                        resultado = "Victoria";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    } else if (boton.innerHTML === "📜") {
+                        respuesta = "🗿";
+                        resultado = "Victoria";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    } else if (boton.innerHTML === "✂️") {
+                        respuesta = "📜";
+                        resultado = "Victoria";
+                        document.getElementById("mensaje").innerHTML = resultado;
+                    }
+                }
+            }
+
+            document.getElementById("numero").innerHTML = cont;
+
+            if (opctrampas === false) {
+                usatrampas = "No";
+            } else {
+                usatrampas = "Si";
+            }
+
+            let partida = [cont, boton.innerHTML, respuesta, resultado, usatrampas];
+            partidas.push(partida);
+            cont++;
+        }
+
+        function historico() {
+            let divpartidas = document.getElementById("partidas");
+
+            divpartidas.innerHTML = "";
+
+            let encabezados = ["Partida nº", "Jugada", "Respuesta", "Resultado", "Trampas"];
+            for (let i = 0; i < encabezados.length; i++) {
+                let divcreado = document.createElement("div");
+                divcreado.innerHTML = encabezados[i];
+                divpartidas.appendChild(divcreado);
+            }
+
+            for (let i = 0; i < partidas.length; i++) {
+                for (let j = 0; j < 5; j++) {
+                    let divcreado = document.createElement("div");
+                    divcreado.innerHTML = partidas[i][j];
+                    divpartidas.appendChild(divcreado);
+                }
+            }
+
+            document.getElementById("general").style.display = "none";
+            document.getElementById("historico").style.display = "block";
+        }
+
+        function volverjuego() {
+            partida = [];
+            partidas = [];
+            cont = 1;
+            opctrampas = false;
+
+            document.getElementById("jugada").innerHTML = "";
+            document.getElementById("numero").innerHTML = "";
+            document.getElementById("respuesta").innerHTML = "";
+            document.getElementById("mensaje").innerHTML = "";
+
+            document.getElementById("indtrampas").style.display = "none";
+            document.getElementById("general").style.display = "block";
+            document.getElementById("historico").style.display = "none";
+        }
+
+        function trampas() {
+            if (opctrampas === false) {
+                opctrampas = true;
+                document.getElementById("indtrampas").style.display = "flex";
+            } else {
+                opctrampas = false;
+                document.getElementById("indtrampas").style.display = "none";
+            }
+        }
+
+        let opciones = document.getElementById("opciones");
+        let otros = document.getElementById("otros");
+        let divhistorico = document.getElementById("historico");
+
+        let botonpiedra = document.createElement("button");
+        botonpiedra.classList = "botonpiedra";
+        botonpiedra.innerHTML = "🗿";
+        botonpiedra.id = "piedra";
+        botonpiedra.onclick = function () { mostraricono(botonpiedra) };
+        opciones.appendChild(botonpiedra);
+
+        let botonpapel = document.createElement("button");
+        botonpapel.classList = "botonpapel";
+        botonpapel.innerHTML = "📜";
+        botonpapel.id = "papel";
+        botonpapel.onclick = function () { mostraricono(botonpapel) };
+        opciones.appendChild(botonpapel);
+
+        let botontijeras = document.createElement("button");
+        botontijeras.classList = "botontijeras";
+        botontijeras.innerHTML = "✂️";
+        botontijeras.id = "tijeras";
+        botontijeras.onclick = function () { mostraricono(botontijeras) };
+        opciones.appendChild(botontijeras);
+
+        let botonfin = document.createElement("button");
+        botonfin.classList = "botonfin";
+        botonfin.innerHTML = "Fin";
+        botonfin.id = "fin";
+        botonfin.onclick = function () { historico() };
+        otros.appendChild(botonfin);
+
+        let botontrampas = document.createElement("button");
+        botontrampas.classList = "botontrampas";
+        botontrampas.innerHTML = "Trampas";
+        botontrampas.id = "trampas";
+        botontrampas.onclick = function () { trampas() };
+        otros.appendChild(botontrampas);
+
+        let botonvolver = document.createElement("button");
+        botonvolver.classList = "botonvolver";
+        botonvolver.innerHTML = "Volver al juego"
+        botonvolver.id = "volver";
+        botonvolver.onclick = function () { volverjuego() };
+        divhistorico.appendChild(botonvolver);
+    </script>
+</body>
+
+</html>
